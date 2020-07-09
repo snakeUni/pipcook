@@ -86,12 +86,12 @@ export class PluginRunnable {
     ];
     console.log(2, Date.now() - t);
     t = Date.now();
-    
+
     this.stdout = await open(compPath + '/logs/stdout.log', 'w+');
     this.stderr = await open(compPath + '/logs/stderr.log', 'w+');
-    console.log(3, Date.now() - t);
+    console.log(3, Date.now(), Date.now() - t);
     t = Date.now();
-    
+
     debug(`bootstrap a new process for ${this.id}.`);
     this.handle = fork(__dirname + '/client', [], {
       stdio: [
@@ -103,21 +103,21 @@ export class PluginRunnable {
       cwd: compPath,
       env: Object.assign({}, process.env, arg.customEnv)
     });
-    console.log(4, Date.now() - t);
+    console.log(4, Date.now(), Date.now() - t);
     t = Date.now();
-    
+
     this.handle.on('message', this.handleMessage.bind(this));
     this.handle.once('exit', this.afterDestroy.bind(this));
 
     // send the first message as handshaking with client
     const ret = await this.handshake();
-    console.log(5, Date.now() - t);
+    console.log(5, Date.now(), Date.now() - t);
     t = Date.now();
     if (!ret) {
       throw new TypeError(`created runnable "${this.id}" failed.`);
     }
     this.state = 'idle';
-    console.log(6, Date.now() - t);
+    console.log(6, Date.now(), Date.now() - t);
   }
   /**
    * Get the runnable value for the given response.
