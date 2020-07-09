@@ -17,15 +17,15 @@ describe('start runnable in normal way', () => {
     expect(runnable.workingDir).toBeInstanceOf(String);
     expect(runnable.state).toBe('init');
   });
-
-  it('should bootstrap the runnable', async () => {
-    await runnable.bootstrap({});
-    expect(runnable.state).toBe('idle');
-  });
-
-  it('should destroy the runnable', async () => {
-    await runnable.destroy();
-    const list = await readdir(costa.options.componentDir);
-    expect(list.length).toBe(1);
-  });
+  for (let i = 0; i < 100; ++i) {
+    it('should bootstrap the runnable', async () => {
+      await runnable.bootstrap({});
+      expect(runnable.state).toBe('idle');
+    });
+  }
+  // it('should destroy the runnable', async () => {
+  //   await runnable.destroy();
+  //   const list = await readdir(costa.options.componentDir);
+  //   expect(list.length).toBe(1);
+  // });
 });

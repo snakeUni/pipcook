@@ -17,10 +17,12 @@ process.title = 'pipcook.costa';
  * @param params the parameters of response.
  */
 function recv(respOp: PluginOperator, ...params: string[]): void {
+  console.log(Date.now, 'ping recv');
   process.send(PluginProtocol.stringify(respOp, {
     event: 'pong',
     params
   }));
+  console.log(Date.now, 'pong send');
 }
 
 let tfjsCache: any;

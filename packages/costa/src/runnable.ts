@@ -74,18 +74,24 @@ export class PluginRunnable {
    */
   async bootstrap(arg: BootstrapArg): Promise<void> {
     const compPath = this.workingDir;
-
+    let t = Date.now();
     debug(`make sure the component dir is existed.`);
     await ensureDir(compPath + '/node_modules');
     await ensureDir(compPath + '/logs');
+    console.log(1, Date.now() - t);
+    t = Date.now();
     await [
       ensureFile(compPath + '/logs/stdout.log'),
       ensureFile(compPath + '/logs/stderr.log')
     ];
-
+    console.log(2, Date.now() - t);
+    t = Date.now();
+    
     this.stdout = await open(compPath + '/logs/stdout.log', 'w+');
     this.stderr = await open(compPath + '/logs/stderr.log', 'w+');
-
+    console.log(3, Date.now() - t);
+    t = Date.now();
+    
     debug(`bootstrap a new process for ${this.id}.`);
     this.handle = fork(__dirname + '/client', [], {
       stdio: [
@@ -97,15 +103,21 @@ export class PluginRunnable {
       cwd: compPath,
       env: Object.assign({}, process.env, arg.customEnv)
     });
+    console.log(4, Date.now() - t);
+    t = Date.now();
+    
     this.handle.on('message', this.handleMessage.bind(this));
     this.handle.once('exit', this.afterDestroy.bind(this));
 
     // send the first message as handshaking with client
     const ret = await this.handshake();
+    console.log(5, Date.now() - t);
+    t = Date.now();
     if (!ret) {
       throw new TypeError(`created runnable "${this.id}" failed.`);
     }
     this.state = 'idle';
+    console.log(6, Date.now() - t);
   }
   /**
    * Get the runnable value for the given response.
